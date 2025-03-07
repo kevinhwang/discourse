@@ -214,11 +214,18 @@ class GlobalSetting
           c[:connector] = RailsFailover::Redis::Connector
         end
 
+        c[:username] = redis_username if redis_username.present?
         c[:password] = redis_password if redis_password.present?
         c[:db] = redis_db if redis_db != 0
         c[:db] = 1 if Rails.env == "test"
         c[:id] = nil if redis_skip_client_commands
-        c[:ssl] = true if redis_use_ssl
+
+        if redis_use_ssl
+          c[:ssl] = true
+          c[:ssl_params] = {
+            verify_mode: OpenSSL::SSL::VERIFY_NONE,
+          }
+        end
 
         c.freeze
       end
@@ -238,11 +245,18 @@ class GlobalSetting
           c[:connector] = RailsFailover::Redis::Connector
         end
 
+        c[:username] = message_bus_redis_username if message_bus_redis_username.present?
         c[:password] = message_bus_redis_password if message_bus_redis_password.present?
         c[:db] = message_bus_redis_db if message_bus_redis_db != 0
         c[:db] = 1 if Rails.env == "test"
         c[:id] = nil if message_bus_redis_skip_client_commands
-        c[:ssl] = true if redis_use_ssl
+
+        if redis_use_ssl
+          c[:ssl] = true
+          c[:ssl_params] = {
+            verify_mode: OpenSSL::SSL::VERIFY_NONE,
+          }
+        end
 
         c.freeze
       end
